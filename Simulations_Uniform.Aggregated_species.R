@@ -1,8 +1,6 @@
 ##########################################
 #               SIMULATIONS              #
 #        UNIFORM/AGGREGATED SPECIES      #
-#        DAVID FERRER  19/11/2023        #
-#       VERSION 1000 X 1000 SQUARES      #
 ##########################################
 
 
@@ -92,7 +90,7 @@ rm(i);rm(vegt_std.i)
 #save the layer
 for (i in 1:length(vegt_std_list)) {
   NUM <- as.character(nrow(vegt_std_list[[i]]))
-  route_rst<-paste("capas_generalista.especialista/VEGT/vegt",NUM,".asc", sep="")
+  route_rst<-paste("mypath/VEGT/vegt",NUM,".asc", sep="")
   writeRaster(vegt_std_list[[i]], route_rst, NAflag = -9999, overwrite= TRUE)
 }
 rm(i);rm(NUM);rm(route_rst);rm(vegt_std_list)
@@ -110,7 +108,7 @@ rm(i);rm(clim_std.i)
 #save the layer
 for (i in 1:length(clim_std_list)) {
   NUM <- as.character(nrow(clim_std_list[[i]]))
-  route_rst<-paste("capas_generalista.especialista/CLIM/clim",NUM,".asc", sep="")
+  route_rst<-paste("mypath/CLIM/clim",NUM,".asc", sep="")
   writeRaster(clim_std_list[[i]], route_rst, NAflag = -9999, overwrite= TRUE)
 }
 rm(i);rm(NUM);rm(route_rst);rm(clim_std_list)
@@ -146,14 +144,14 @@ ADQ_lgt_R <- round(ADQ_lgt, 2)
 
 
 #Save the layers created
-setwd("D:/OneDrive - Universidad de Castilla-La Mancha/DOCTORADO UCLM/ESTANCIAS/estancia UCLM/simulaciones")
-route_rst<-paste("capas_generalista.especialista/especialista/ADQ.asc", sep="")
+setwd("mypath")
+route_rst<-paste("especialista/ADQ.asc", sep="")
 writeRaster(ADQ, route_rst, NAflag = -9999, overwrite= TRUE)
 
-route_rst<-paste("capas_generalista.especialista/especialista/error_nodist.asc", sep="")
+route_rst<-paste("especialista/error_nodist.asc", sep="")
 writeRaster(r_error, route_rst, NAflag = -9999, overwrite= TRUE)
 
-route_rst<-paste("capas_generalista.especialista/especialista/ADQ_lgt_R_nodist.asc", sep="")
+route_rst<-paste("especialista/ADQ_lgt_R_nodist.asc", sep="")
 writeRaster(ADQ_lgt_R, route_rst, NAflag = -9999, overwrite= TRUE)
 
 
@@ -191,8 +189,8 @@ writeRaster(ADQ_lgt_R, route_rst, NAflag = -9999, overwrite= TRUE)
 
 
 #(DO IT FOR UNIFORM AND AGGREGATED SPATIAL PATTTERN SPECIES)
-ADQ_lgt_R <- rast("capas_generalista.especialista/especialista/ADQ_lgt_R_nodist.asc")
-ADQ_lgt_R <- rast("capas_generalista.especialista/generalista/ADQ_lgt_R_nodist.asc")
+ADQ_lgt_R <- rast("mypath/especialista/ADQ_lgt_R_nodist.asc")
+ADQ_lgt_R <- rast("mypath/generalista/ADQ_lgt_R_nodist.asc")
 
 
 ####Now, what we have to do, is obtaining simulated animals from this pattern of 
@@ -302,7 +300,7 @@ legend("topright", inset=c(-0.2, 0), legend=c(sort(unique(sampling_units$occurre
 # SAVE ALL DATA REQUIRED --------------------------------------------------
 
 
-setwd("D:/OneDrive - Universidad de Castilla-La Mancha/DOCTORADO UCLM/ESTANCIAS/estancia UCLM/simulaciones/capas_generalista.especialista")
+setwd("mypath")
 #Save the data frame with all the information
 write.table(sampling_units, 'generalista/sampling_units.csv', row.names = FALSE, sep = ",")
 #And save as vector layer format
@@ -324,10 +322,10 @@ terra::writeRaster(occurs_r, "generalista/true_abundance.asc", overwrite=TRUE)
 
 
 #Charge VEGETATION layers
-setwd("D:/OneDrive - Universidad de Castilla-La Mancha/DOCTORADO UCLM/ESTANCIAS/estancia UCLM/simulaciones")
+setwd("mypath")
 lista_rasters<-list()
-for (j in 1:length(list.files("capas_generalista.especialista/VEGT/", pattern = "^vegt.*\\.asc$"))) {
-  lista_rasters[[j]]<-rast(paste("capas_generalista.especialista/VEGT/", list.files("capas_generalista.especialista/VEGT/", pattern = "^vegt.*\\.asc$")[j], sep=""))
+for (j in 1:length(list.files("VEGT/", pattern = "^vegt.*\\.asc$"))) {
+  lista_rasters[[j]]<-rast(paste("VEGT/", list.files("VEGT/", pattern = "^vegt.*\\.asc$")[j], sep=""))
 }
 rm(j)
 
@@ -344,8 +342,7 @@ VEGT_100<-lista_post[[2]]
 VEGT_1000<-lista_post[[3]]
 
 #Save the layers
-base <- "D:/david.ferrer"
-savepath <- file.path(base, "SIMULACIONES/predictores/especialista.generalista")
+savepath <- file.path("mypath")
 if (!dir.exists(savepath)) {
   dir.create(savepath, recursive=TRUE)
   print(paste("Creating directory", savepath))
@@ -355,17 +352,17 @@ if (!dir.exists(savepath)) {
 
 for(i in 1:length(ls(pattern = "VEGT_"))) {
   terra::writeRaster(get(ls(pattern = "VEGT_")[i]), 
-                     paste0("D:/david.ferrer/SIMULACIONES/predictores/especialista.generalista/VEGT", 
+                     paste0("mypath/VEGT", 
                             gsub("VEGT_", "", ls(pattern = "VEGT_")[i]),
                             ".asc"), NAflag = -9999, overwrite = TRUE)
 }
 rm(i)
 
 #Charge CLIME layers
-setwd("D:/OneDrive - Universidad de Castilla-La Mancha/DOCTORADO UCLM/ESTANCIAS/estancia UCLM/simulaciones")
+setwd("mypath")
 lista_rasters<-list()
-for (j in 1:length(list.files("capas_generalista.especialista/CLIM/", pattern = "^clim.*\\.asc$"))) {
-  lista_rasters[[j]]<-rast(paste("capas_generalista.especialista/CLIM/", list.files("capas_generalista.especialista/CLIM/", pattern = "^clim.*\\.asc$")[j], sep=""))
+for (j in 1:length(list.files("CLIM/", pattern = "^clim.*\\.asc$"))) {
+  lista_rasters[[j]]<-rast(paste("CLIM/", list.files("CLIM/", pattern = "^clim.*\\.asc$")[j], sep=""))
 }
 rm(j)
 
@@ -382,8 +379,7 @@ CLIM_100<-lista_post[[2]]
 CLIM_1000<-lista_post[[3]]
 
 #Save the layers
-base <- "D:/david.ferrer"
-savepath <- file.path(base, "SIMULACIONES/predictores/especialista.generalista")
+savepath <- file.path(base, "mypath")
 if (!dir.exists(savepath)) {
   dir.create(savepath, recursive=TRUE)
   print(paste("Creating directory", savepath))
@@ -393,7 +389,7 @@ if (!dir.exists(savepath)) {
 
 for(i in 1:length(ls(pattern = "CLIM_"))) {
   terra::writeRaster(get(ls(pattern = "CLIM_")[i]), 
-                     paste0("D:/david.ferrer/SIMULACIONES/predictores/especialista.generalista/CLIM", 
+                     paste0("mypath/CLIM", 
                             gsub("CLIM_", "", ls(pattern = "CLIM_")[i]),
                             ".asc"), NAflag = -9999, overwrite = TRUE)
 }
@@ -405,7 +401,7 @@ rm(i)
 
 
 #All data employed were on this repository
-#D:\david.ferrer\SIMULACIONES
+#mypath
 
 #We employ MaxEnt software
 #The parameters that have been taken into account were: 
@@ -427,314 +423,406 @@ rm(i)
 #Bias file = None
 
 
+# CREATE DIFFERENCE 10-100 DIMENSIONS -------------------------------------
+
+#Join all the layers of the same resolution in one multilayer raster
+COV.1000 <- c(CLIM_1000, VEGT_1000)
+COV.100 <- c(CLIM_100, VEGT_100)
+COV.10 <- c(CLIM_10, VEGT_10)
+names(COV.1000) <- c("CLIM_1000", "VEGT_1000")
+names(COV.100) <- c("CLIM_100", "VEGT_100")
+names(COV.10) <- c("CLIM_10", "VEGT_10")
+
+#Create a vector layer with all the centroid of spatial units
+locs <- as.points(COV.1000$CLIM_1000)
+
+#Extract for each location, the predictor values at 1000x1000, 100x100 and 10x10 dimensions
+COV.ext.1000 <- terra::extract(COV.1000, locs)
+COV.ext.100 <- terra::extract(COV.100, locs)
+COV.ext.10 <- terra::extract(COV.10, locs)
+
+library(plyr)
+COV_TOT1 <- join(COV.ext.1000, COV.ext.100, by="ID")
+COV_TOT2 <- join(COV.ext.100, COV.ext.10, by="ID")
+
+#Calculate the distance (absolute value) between each COVARIATE at 100x100 and  
+#1000x1000 dimensions for each location
+#This is the DIFFERENCE between 1000x1000 and 100x100 dimensions
+for (i in 2:3) {
+  COV_TOT1[i+4] <- abs(COV_TOT1[i] - COV_TOT1[i+2])
+  name <- names(COV_TOT1[i])
+}
+for (i in 2:3) {
+  COV_TOT1[i+4] <- COV_TOT1[i] - COV_TOT1[i+2]
+  name <- names(COV_TOT1[i])
+}
+names(COV_TOT1)
+names(COV_TOT1) <- c("ID", "CLIM_1000", "VEGT_1000", "CLIM_100", "VEGT_100", "DIF_C.1000-100", "DIFF_V.1000-100")
+
+#Calculate the distance between each COVARIATE at 10x10 and  
+#100x100 dimensions for each location
+#This is the DIFFERENCE between 100x100 and 10x10 dimensions
+for (i in 2:3) {
+  COV_TOT2[i+4] <- abs(COV_TOT2[i] - COV_TOT2[i+2])
+  name <- names(COV_TOT2[i])
+}
+for (i in 2:3) {
+  COV_TOT2[i+4] <- COV_TOT2[i] - COV_TOT2[i+2]
+  name <- names(COV_TOT2[i])
+}
+names(COV_TOT2)
+names(COV_TOT2) <- c("ID", "CLIM_100", "VEGT_100", "CLIM_10", "VEGT_10", "DIF_C.100-10", "DIFF_V.100-10")
+
+#Join all the data together
+COV_TOT <- join(COV_TOT1[,c(1,2,3,6,7)], COV_TOT2[,c(1,6,7)], by = "ID")
+
+#Return again to vector format
+v.COV_TOT <- cbind(locs, COV_TOT[,-1])
+v.COV_TOT <- v.COV_TOT[,-1]
+
+#Create a list for the rasterized layers
+raster_layers <- list()
+
+#Rasterize each column of the vector layer
+for (i in names(v.COV_TOT)) {
+  raster_layer <- rasterize(v.COV_TOT, COV.1000, field = i)
+  raster_layers[[i]] <- raster_layer
+}
+
+#Combine all the layers in a multilayer spatraster
+COV_raster <- rast(raster_layers)
+
+#Visualize
+plot(COV_raster)
+names(COV_raster) <- c("CLIM_1000", "VEGT_1000", "DIF_C.1000-100", 
+                       "DIF_V.1000-100", "DIF_C.100-10", "DIF_V.100-10")
+
+
+# PREPARE A DATASET WITH ALL THE INFO -------------------------------------
+
+#Charge the layers with the prediction at lower resolution for both species
+Abund <- c(unif.species0, aggr.species0)
+names(Abund) <- c("Unif.species", "Aggr.species")
+
+#Charge Maxent predictions
+setwd("mypath")
+unif.pred <- rast("especialista/10/Virtual_Species_avg.asc")
+aggr.pred <- rast("generalista/10/Virtual_Species_avg.asc")
+
+unif.pred@cpp[["extent"]] <- COV_raster@cpp[["extent"]]
+aggr.pred@cpp[["extent"]] <- COV_raster@cpp[["extent"]]
+Abund@cpp[["extent"]] <- COV_raster@cpp[["extent"]]
+
+#change to the resolution of the rest of layers
+unif.pred_1000 <- terra::disagg(unif.pred, fact=100, method="near")
+aggr.pred_1000 <- terra::disagg(aggr.pred, fact=100, method="near")
+
+#And add the CRS to be equal in all the cases
+crs(unif.pred_1000) <- crs(COV_raster)
+crs(aggr.pred_1000) <- crs(COV_raster)
+crs(Abund) <- crs(COV_raster)
+
+#Join all the info: Predictions at lower resolution, true abundance, covariates
+#of difference between resolutions (intermediate-scale covariates)
+TOT.DATA <- c(Abund, unif.pred_1000, aggr.pred_1000, COV_raster)
+
+names(TOT.DATA) <- c("Abund.unif", "Abund.aggr", "Pred.unif", "Pred.aggr", 
+                     "CLIM_1000", "VEGT_1000", "DIF_C.1000-100", 
+                     "DIF_V.1000-100", "DIF_C.100-10", "DIF_V.100-10")
+
+
 
 # SUITABILITY-ABUNDANCE ANALYSIS ------------------------------------------
 
+#prepare variables
+Total.data.df <- as.data.frame(TOT.DATA)
+data1 <- data.frame(scale(Total.data.df[,3:10]))
+data2 <- data.frame(Total.data.df[,1:2])
+model.data <- cbind(data2, data1)
+
+names(Total.data.df) <- names(model.data)
 
 #(DO IT FOR UNIFORM AND AGGREGATED SPATIAL PATTTERN SPECIES)
-setwd("D:/david.ferrer/SIMULACIONES")
+setwd("mypath")
 
-## UNIFORM PATTERN SPECIES -------------------------------------------------
+#Create a data frame to save all the results
+results <- data.frame(
+  Replica = integer(),
+  ModelType = character(),
+  ModelLevel = character(),
+  DevianceExplained = numeric(),
+  stringsAsFactors = FALSE
+)
 
-### Resolution 100x100 cell size --------------------------------------------
+#Loop of 10 replicates per species and model level
+set.seed(123) # Set seed to permit reproducible results
+for (i in 1:10) {
+  # Random sample of 400 of model data rows
+  sampled_data <- model.data[sample(nrow(model.data), size = 400), ]
+  
+  # UNIFORM SPECIES
+  fitU.MA <- glm(Abund.unif ~ Pred.unif, data = sampled_data, family = poisson())
+  fitU.MAME <- glm(Abund.unif ~ Pred.unif + DIF_C.100.10 + DIF_V.100.10,
+                   data = sampled_data, family = poisson())
+  fitU.MAMEMI <- glm(Abund.unif ~ Pred.unif + DIF_C.100.10 + DIF_V.100.10 +
+                       VEGT_1000,
+                     data = sampled_data, family = poisson())
+  
+  # Explained diviance calculation
+  DMA <- ((summary(fitU.MA)$null.deviance - summary(fitU.MA)$deviance) / summary(fitU.MA)$null.deviance) * 100
+  DMAME <- ((summary(fitU.MAME)$null.deviance - summary(fitU.MAME)$deviance) / summary(fitU.MAME)$null.deviance) * 100
+  DMAMEMI <- ((summary(fitU.MAMEMI)$null.deviance - summary(fitU.MAMEMI)$deviance) / summary(fitU.MAMEMI)$null.deviance) * 100
+  
+  # Save results of fitU
+  results <- rbind(results, data.frame(
+    Replica = i,
+    ModelType = "fitU",
+    ModelLevel = c("MA", "MAME", "MAMEMI"),
+    DevianceExplained = c(DMA, DMAME, DMAMEMI)
+  ))
+  
+  # AGGREGATED SPECIES
+  fitG.MA <- glm(Abund.aggr ~ Pred.aggr, data = sampled_data, family = poisson())
+  fitG.MAME <- glm(Abund.aggr ~ Pred.aggr + DIF_C.100.10 + DIF_V.100.10,
+                   data = sampled_data, family = poisson())
+  fitG.MAMEMI <- glm(Abund.aggr ~ Pred.aggr + DIF_C.100.10 + DIF_V.100.10 +
+                       VEGT_1000,
+                     data = sampled_data, family = poisson())
+  
+  # Explained deviance calculation
+  DMA2 <- ((summary(fitG.MA)$null.deviance - summary(fitG.MA)$deviance) / summary(fitG.MA)$null.deviance) * 100
+  DMAME2 <- ((summary(fitG.MAME)$null.deviance - summary(fitG.MAME)$deviance) / summary(fitG.MAME)$null.deviance) * 100
+  DMAMEMI2 <- ((summary(fitG.MAMEMI)$null.deviance - summary(fitG.MAMEMI)$deviance) / summary(fitG.MAMEMI)$null.deviance) * 100
+  
+  # Save results of fitG
+  results <- rbind(results, data.frame(
+    Replica = i,
+    ModelType = "fitG",
+    ModelLevel = c("MA", "MAME", "MAMEMI"),
+    DevianceExplained = c(DMA2, DMAME2, DMAMEMI2)
+  ))
+  print(paste("loop model", i))
+}
 
-#Charge the prediction obtained with Maxent
-pred <- rast("resultados/especialista.generalista_NODIST/especialista/10/Virtual_Species_avg.asc")
-r_base.1000 <- rast(ncol=1000, nrow=1000, xmin=0, xmax=1000, ymin=0, ymax=1000, )
-pred@cpp[["extent"]] <- r_base.1000@cpp[["extent"]]
+# Visualize results
+print(results)
 
-data_oc <- read.csv("D:/OneDrive - Universidad de Castilla-La Mancha/DOCTORADO UCLM/ESTANCIAS/estancia UCLM/simulaciones/capas_generalista.especialista/especialista/sampling_units.csv")
-oc_sv <- vect(data_oc, geom=c("x", "y"))
+#Check and prepare data for analysis
+str(results)
 
-plot(pred)
-points(oc_sv, pch=16)
+results$Type.f <- as.factor(results$ModelType)
+results$Res.f <- as.factor(results$ModelLevel)
 
-preds <- extract(pred, oc_sv, method="simple")
+#Quantify and check interaction
+#Complete model (with interaction)
+lm_full <- lm(DevianceExplained ~ Res.f * Type.f, data = results)
+summary(lm_full)
+dev_full <- summary(lm_full)$r.squared
 
-comp_data <- data.frame(cbind(data_oc, preds))
+#Reduced model (without interaction)
+lm_reduced <- lm(DevianceExplained ~ Res.f + Type.f, data = results)
+dev_reduced <- summary(lm_reduced)$r.squared
 
-names(comp_data) <- c("x", "y", "SampleID", "Abundance", "Occurrence",
-                      "ID",  "Suitability_predicted_by_Maxent")
+interaction_effect <- dev_full - dev_reduced
 
-comp_data$Abundance <- comp_data$Abundance/max(comp_data$Abundance)
+interaction_effect * 100
+
+
+# Now visualize the interaction and independdent effects
+library(ggplot2)
+
+# Crear el gráfico con barras de error
+ggplot(results, aes(x = ModelLevel, y = DevianceExplained, color = ModelType, group = ModelType)) +
+  # Líneas conectando los puntos
+  stat_summary(fun = mean, geom = "line", size = 1) +
+  # Puntos de la media
+  stat_summary(fun = mean, geom = "point", size = 3) +
+  # Barras de error
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.2, size = 0.8) +
+  labs(
+    title = "Interacción entre ModelLevel y ModelType",
+    x = "Model Level",
+    y = "Deviance Explained (%)"
+  ) +
+  scale_color_manual(values = c("cyan2", "coral")) + # Personalizar colores de las líneas
+  theme_minimal()
+
+
+
+# QUANTILE REGRESSIONS ---------------------------------------------------
+
+
+model.data$Abund.aggr01 <- model.data$Abund.aggr/max(model.data$Abund.aggr)
+model.data$Abund.unif01 <- model.data$Abund.unif/max(model.data$Abund.unif)
+
+model.data$Abund.aggrlog <- log(model.data$Abund.aggr01 + 1)
+model.data$Abund.uniflog <- log(model.data$Abund.unif01 + 1)
+
+
+# Random sample of 400 model data rows
+set.seed(3333)
+sampled_data <- model.data[sample(nrow(model.data), size = 400), ]
+
 
 library(ggplot2)
-ggplot(data = comp_data, 
-       aes(x = Suitability_predicted_by_Maxent, y = Abundance)) + 
-  geom_point() +
-  ggtitle("Abundance-Suitability relationship")
+library(qgam)
 
+#Aggregate columns of covariates that determine suitability for each model level
+sampled_data$Pred_agg_1 <- sampled_data$Pred.aggr
+sampled_data$Pred_agg_2 <- sampled_data$Pred.aggr + sampled_data$DIF_C.100.10 + sampled_data$DIF_V.100.10
+sampled_data$Pred_agg_3 <- sampled_data$Pred.aggr + sampled_data$DIF_C.100.10 + sampled_data$DIF_V.100.10 + sampled_data$VEGT_1000
+
+
+#Define percentiles
 tau <- c(0.1,0.2,0.3,0.4, 0.5, 0.6,0.7,0.8, 0.9, 0.99)
 
-ggplot(comp_data, aes(Suitability_predicted_by_Maxent,Abundance)) + 
-  geom_point() + 
-  geom_quantile(quantiles = tau) +
-  geom_smooth(method = 'glm', col="red", size = 2) +
-  ggtitle("Regresion cuantilica suitability_abundancia Simulacion 10S")
+#BROAD scale
+#Adjust non-linear models per percentil with qgam
+quantile_models <- lapply(tau, function(q) {
+  qgam(Abund.aggr01 ~ s(Pred_agg_1, bs = "cs"), qu = q, data = sampled_data)
+})
 
-#Now we do a GLM to obtain the linear adjustment of the relationship.
-fit10S <- glm(Abundance ~ Suitability_predicted_by_Maxent, data = comp_data, family = poisson())
-summary(fit10S)
+#Extract predictions of the models for plotting
+predictions <- do.call(rbind, lapply(seq_along(tau), function(i) {
+  data.frame(
+    Pred.aggr = sampled_data$Pred_agg_1,
+    Quantile = tau[i],
+    Prediction = predict(quantile_models[[i]], newdata = sampled_data)
+  )
+}))
 
-#Obtain % explicated Devianze
-with(summary(fit10S), 1 - deviance/null.deviance)*100
+#Create the plot with the non-linear quantile regressions
+ggplot(sampled_data, aes(Pred_agg_1, Abund.aggr01)) +
+  geom_point(alpha = 0.5) +
+  geom_line(data = predictions, aes(x = Pred.aggr, y = Prediction, group = Quantile, color = as.factor(Quantile)), size = 1) +
+  scale_color_viridis_d(name = "Quantile") +
+  ggtitle("Regresión cuantilica suitability_abundancia (no lineal)") +
+  theme_minimal()
 
-#Now we do the Quantile regresion
-library(quantreg)
-tau <- c(0.1,0.2,0.3,0.4, 0.5, 0.6,0.7,0.8, 0.9, 0.99)
-fitQ10S <- rq(Abundance ~ Suitability_predicted_by_Maxent, tau, data = comp_data) 
-plot(fitQ10S)
+#BROAD+INTERMEDIATE scale
+#Adjust non-linear models per percentil with qgam
+quantile_models <- lapply(tau, function(q) {
+  qgam(Abund.aggr01 ~ s(Pred_agg_2, bs = "cs"), qu = q, data = sampled_data)
+})
+
+#Extract predictions of the models for plotting
+predictions <- do.call(rbind, lapply(seq_along(tau), function(i) {
+  data.frame(
+    Pred.aggr = sampled_data$Pred_agg_2,
+    Quantile = tau[i],
+    Prediction = predict(quantile_models[[i]], newdata = sampled_data)
+  )
+}))
+
+#Create the plot with the non-linear quantile regressions
+ggplot(sampled_data, aes(Pred_agg_2, Abund.aggr01)) +
+  geom_point(alpha = 0.5) +
+  geom_line(data = predictions, aes(x = Pred.aggr, y = Prediction, group = Quantile, color = as.factor(Quantile)), size = 1) +
+  scale_color_viridis_d(name = "Quantile") +
+  ggtitle("Regresión cuantilica suitability_abundancia (no lineal)") +
+  theme_minimal()
+
+#BROAD+INTERMEDIATE+LOCAL scale
+#Adjust non-linear models per percentil with qgam
+quantile_models <- lapply(tau, function(q) {
+  qgam(Abund.aggr01 ~ s(Pred_agg_3, bs = "cs"), qu = q, data = sampled_data)
+})
+
+#Extract predictions of the models for plotting
+predictions <- do.call(rbind, lapply(seq_along(tau), function(i) {
+  data.frame(
+    Pred.aggr = sampled_data$Pred_agg_3,
+    Quantile = tau[i],
+    Prediction = predict(quantile_models[[i]], newdata = sampled_data)
+  )
+}))
+
+#Create the plot with the non-linear quantile regressions
+ggplot(sampled_data, aes(Pred_agg_3, Abund.aggr01)) +
+  geom_point(alpha = 0.5) +
+  geom_line(data = predictions, aes(x = Pred.aggr, y = Prediction, group = Quantile, color = as.factor(Quantile)), size = 1) +
+  scale_color_viridis_d(name = "Quantile") +
+  ggtitle("Regresión cuantilica suitability_abundancia (no lineal)") +
+  theme_minimal()
+
+#UNIFORM
+#Aggregate columns of covariates that determine suitability for each model level
+sampled_data$Pred_uni_1 <- sampled_data$Pred.unif
+sampled_data$Pred_uni_2 <- sampled_data$Pred.unif + sampled_data$DIF_C.100.10 + sampled_data$DIF_V.100.10
+sampled_data$Pred_uni_3 <- sampled_data$Pred.unif + sampled_data$DIF_C.100.10 + sampled_data$DIF_V.100.10 + sampled_data$VEGT_1000
 
 
-### Resolution 10x10 cell size ----------------------------------------------
-
-#Charge the prediction obtained with Maxent
-pred <- rast("resultados/especialista.generalista_NODIST/especialista/100/Virtual_Species_avg.asc")
-r_base.1000 <- rast(ncol=1000, nrow=1000, xmin=0, xmax=1000, ymin=0, ymax=1000, )
-pred@cpp[["extent"]] <- r_base.1000@cpp[["extent"]]
-
-data_oc <- read.csv("D:/OneDrive - Universidad de Castilla-La Mancha/DOCTORADO UCLM/ESTANCIAS/estancia UCLM/simulaciones/capas_generalista.especialista/especialista/sampling_units.csv")
-oc_sv <- vect(data_oc, geom=c("x", "y"))
-
-plot(pred)
-points(oc_sv, pch=16)
-
-preds <- extract(pred, oc_sv, method="simple")
-
-comp_data <- data.frame(cbind(data_oc, preds))
-
-names(comp_data) <- c("x", "y", "SampleID", "Abundance", "Occurrence",
-                      "ID",  "Suitability_predicted_by_Maxent")
-
-comp_data$Abundance <- comp_data$Abundance/max(comp_data$Abundance)
-
-library(ggplot2)
-ggplot(data = comp_data, 
-       aes(x = Suitability_predicted_by_Maxent, y = Abundance)) + 
-  geom_point() +
-  ggtitle("Abundance-Suitability relationship")
-
-tau <- c(0.1,0.2,0.3,0.4, 0.5, 0.6,0.7,0.8, 0.9, 0.99)
-
-ggplot(comp_data, aes(Suitability_predicted_by_Maxent,Abundance)) + 
-  geom_point() + 
-  geom_quantile(quantiles = tau) +
-  geom_smooth(method = 'glm', col="red", size = 2) +
-  ggtitle("Regresion cuantilica suitability_abundancia Simulacion 100S")
-
-#Now we do a GLM toobtain the linear adjustment of the relationship.
-fit100S <- glm(Abundance ~ Suitability_predicted_by_Maxent, data = comp_data, family = poisson())
-summary(fit100S)
-
-#Obtain % explicated Devianze
-with(summary(fit100S), 1 - deviance/null.deviance)*100
-
-#Now we do the Quantile regresion
-library(quantreg)
-tau <- c(0.1,0.2,0.3,0.4, 0.5, 0.6,0.7,0.8, 0.9, 0.99)
-fitQ100S <- rq(Abundance ~ Suitability_predicted_by_Maxent, tau, data = comp_data) 
-plot(fitQ100S)
-
-
-### Resolution 1x1 cell size ------------------------------------------------
-
-#Charge the prediction obtained with Maxent
-pred <- rast("resultados/especialista.generalista_NODIST/especialista/1000/Virtual_Species_avg.asc")
-r_base.1000 <- rast(ncol=1000, nrow=1000, xmin=0, xmax=1000, ymin=0, ymax=1000, )
-pred@cpp[["extent"]] <- r_base.1000@cpp[["extent"]]
-
-data_oc <- read.csv("D:/OneDrive - Universidad de Castilla-La Mancha/DOCTORADO UCLM/ESTANCIAS/estancia UCLM/simulaciones/capas_generalista.especialista/especialista/sampling_units.csv")
-oc_sv <- vect(data_oc, geom=c("x", "y"))
-
-plot(pred)
-points(oc_sv, pch=16)
-
-preds <- extract(pred, oc_sv, method="simple")
-
-comp_data <- data.frame(cbind(data_oc, preds))
-
-names(comp_data) <- c("x", "y", "SampleID", "Abundance", "Occurrence",
-                      "ID",  "Suitability_predicted_by_Maxent")
-
-comp_data$Abundance <- comp_data$Abundance/max(comp_data$Abundance)
-
-library(ggplot2)
-ggplot(data = comp_data, 
-       aes(x = Suitability_predicted_by_Maxent, y = Abundance)) + 
-  geom_point() +
-  ggtitle("Abundance-Suitability relationship")
-
+#Define percentiles
 tau <- c(0.1,0.2,0.3,0.4, 0.5, 0.6,0.7,0.8, 0.9, 0.99)
 
-ggplot(comp_data, aes(Suitability_predicted_by_Maxent,Abundance)) + 
-  geom_point() + 
-  geom_quantile(quantiles = tau) +
-  geom_smooth(method = 'glm', col="red", size = 2) +
-  ggtitle("Regresion cuantilica suitability_abundancia Simulacion 1000S")
+#BROAD scale
+#Adjust non-linear models per percentil with qgam
+quantile_models <- lapply(tau, function(q) {
+  qgam(Abund.unif01 ~ s(Pred_uni_1, bs = "cs"), qu = q, data = sampled_data)
+})
 
-#Now we do a GLM toobtain the linear adjustment of the relationship.
-fit1000S <- glm(Abundance ~ Suitability_predicted_by_Maxent, data = comp_data, family = poisson())
-summary(fit1000S)
+#Extract predictions of the models for plotting
+predictions <- do.call(rbind, lapply(seq_along(tau), function(i) {
+  data.frame(
+    Pred.aggr = sampled_data$Pred_uni_1,
+    Quantile = tau[i],
+    Prediction = predict(quantile_models[[i]], newdata = sampled_data)
+  )
+}))
 
-#Obtain % explicated Devianze
-with(summary(fit1000S), 1 - deviance/null.deviance)*100
+#Create the plot with the non-linear quantile regressions
+ggplot(sampled_data, aes(Pred_uni_1, Abund.unif01)) +
+  geom_point(alpha = 0.5) +
+  geom_line(data = predictions, aes(x = Pred.aggr, y = Prediction, group = Quantile, color = as.factor(Quantile)), size = 1) +
+  scale_color_viridis_d(name = "Quantile") +
+  ggtitle("Regresión cuantilica suitability_abundancia (no lineal)") +
+  theme_minimal()
 
-#Now we do the Quantile regresion
-library(quantreg)
-tau <- c(0.1,0.2,0.3,0.4, 0.5, 0.6,0.7,0.8, 0.9, 0.99)
-fitQ1000S <- rq(Abundance ~ Suitability_predicted_by_Maxent, tau, data = comp_data) 
-plot(fitQ1000S)
+#BROAD+INTERMEDIATE scale
+#Adjust non-linear models per percentil with qgam
+quantile_models <- lapply(tau, function(q) {
+  qgam(Abund.unif01 ~ s(Pred_uni_2, bs = "cs"), qu = q, data = sampled_data)
+})
 
+#Extract predictions of the models for plotting
+predictions <- do.call(rbind, lapply(seq_along(tau), function(i) {
+  data.frame(
+    Pred.aggr = sampled_data$Pred_uni_2,
+    Quantile = tau[i],
+    Prediction = predict(quantile_models[[i]], newdata = sampled_data)
+  )
+}))
 
-## AGGREGATED PATTERN SPECIES ----------------------------------------------
+#Create the plot with the non-linear quantile regressions
+ggplot(sampled_data, aes(Pred_uni_2, Abund.unif01)) +
+  geom_point(alpha = 0.5) +
+  geom_line(data = predictions, aes(x = Pred.aggr, y = Prediction, group = Quantile, color = as.factor(Quantile)), size = 1) +
+  scale_color_viridis_d(name = "Quantile") +
+  ggtitle("Regresión cuantilica suitability_abundancia (no lineal)") +
+  theme_minimal()
 
-### Resolution 100x100 cell size --------------------------------------------
+#BROAD+INTERMEDIATE+LOCAL scale
+#Adjust non-linear models per percentil with qgam
+quantile_models <- lapply(tau, function(q) {
+  qgam(Abund.unif01 ~ s(Pred_uni_3, bs = "cs"), qu = q, data = sampled_data)
+})
 
-#Charge the prediction obtained with Maxent
-pred <- rast("resultados/especialista.generalista_NODIST/generalista/10/Virtual_Species_avg.asc")
-r_base.1000 <- rast(ncol=1000, nrow=1000, xmin=0, xmax=1000, ymin=0, ymax=1000, )
-pred@cpp[["extent"]] <- r_base.1000@cpp[["extent"]]
+#Extract predictions of the models for plotting
+predictions <- do.call(rbind, lapply(seq_along(tau), function(i) {
+  data.frame(
+    Pred.aggr = sampled_data$Pred_uni_3,
+    Quantile = tau[i],
+    Prediction = predict(quantile_models[[i]], newdata = sampled_data)
+  )
+}))
 
-data_oc <- read.csv("D:/OneDrive - Universidad de Castilla-La Mancha/DOCTORADO UCLM/ESTANCIAS/estancia UCLM/simulaciones/capas_generalista.especialista/generalista/sampling_units.csv")
-oc_sv <- vect(data_oc, geom=c("x", "y"))
-
-plot(pred)
-points(oc_sv, pch=16)
-
-preds <- extract(pred, oc_sv, method="simple")
-
-comp_data <- data.frame(cbind(data_oc, preds))
-
-names(comp_data) <- c("x", "y", "SampleID", "Abundance", "Occurrence",
-                      "ID",  "Suitability_predicted_by_Maxent")
-
-comp_data$Abundance <- comp_data$Abundance/max(comp_data$Abundance)
-
-library(ggplot2)
-ggplot(data = comp_data, 
-       aes(x = Suitability_predicted_by_Maxent, y = Abundance)) + 
-  geom_point() +
-  ggtitle("Abundance-Suitability relationship")
-
-tau <- c(0.1,0.2,0.3,0.4, 0.5, 0.6,0.7,0.8, 0.9, 0.99)
-
-
-ggplot(comp_data, aes(Suitability_predicted_by_Maxent,Abundance)) + 
-  geom_point() + 
-  geom_quantile(quantiles = tau) +
-  geom_smooth(method = 'glm', col="red", size = 2) +
-  ggtitle("Regresion cuantilica suitability_abundancia Simulacion 10G")
-
-#Now we do a GLM toobtain the linear adjustment of the relationship.
-fit10G <- glm(Abundance ~ Suitability_predicted_by_Maxent, data = comp_data, family = poisson())
-summary(fit10G)
-
-#Obtain % explicated Devianze
-with(summary(fit10G), 1 - deviance/null.deviance)*100
-
-#Now we do the Quantile regresion
-library(quantreg)
-tau <- c(0.1,0.2,0.3,0.4, 0.5, 0.6,0.7,0.8, 0.9, 0.99)
-fitQ10G <- rq(Abundance ~ Suitability_predicted_by_Maxent, tau, data = comp_data) 
-plot(fitQ10G)
-
-### Resolution 10x10 cell size --------------------------------------------
-
-#Charge the prediction obtained with Maxent
-pred <- rast("resultados/especialista.generalista_NODIST/generalista/100/Virtual_Species_avg.asc")
-r_base.1000 <- rast(ncol=1000, nrow=1000, xmin=0, xmax=1000, ymin=0, ymax=1000, )
-pred@cpp[["extent"]] <- r_base.1000@cpp[["extent"]]
-
-data_oc <- read.csv("D:/OneDrive - Universidad de Castilla-La Mancha/DOCTORADO UCLM/ESTANCIAS/estancia UCLM/simulaciones/capas_generalista.especialista/generalista/sampling_units.csv")
-oc_sv <- vect(data_oc, geom=c("x", "y"))
-
-plot(pred)
-points(oc_sv, pch=16)
-
-preds <- extract(pred, oc_sv, method="simple")
-
-comp_data <- data.frame(cbind(data_oc, preds))
-
-names(comp_data) <- c("x", "y", "SampleID", "Abundance", "Occurrence",
-                      "ID",  "Suitability_predicted_by_Maxent")
-
-comp_data$Abundance <- comp_data$Abundance/max(comp_data$Abundance)
-
-library(ggplot2)
-ggplot(data = comp_data, 
-       aes(x = Suitability_predicted_by_Maxent, y = Abundance)) + 
-  geom_point() +
-  ggtitle("Abundance-Suitability relationship")
-
-tau <- c(0.1,0.2,0.3,0.4, 0.5, 0.6,0.7,0.8, 0.9, 0.99)
-
-ggplot(comp_data, aes(Suitability_predicted_by_Maxent,Abundance)) + 
-  geom_point() + 
-  geom_quantile(quantiles = tau) +
-  geom_smooth(method = 'glm', col="red", size = 2) +
-  ggtitle("Regresion cuantilica suitability_abundancia Simulacion 100G")
-
-#Now we do a GLM to obtain the linear adjustment of the relationship.
-fit100G <- glm(Abundance ~ Suitability_predicted_by_Maxent, data = comp_data, family = poisson())
-summary(fit100G)
-
-#Obtain % explicated Devianze
-with(summary(fit100G), 1 - deviance/null.deviance)*100
-
-#Now we do the Quantile regresion
-library(quantreg)
-tau <- c(0.1,0.2,0.3,0.4, 0.5, 0.6,0.7,0.8, 0.9, 0.99)
-fitQ100G <- rq(Abundance ~ Suitability_predicted_by_Maxent, tau, data = comp_data) 
-plot(fitQ100G)
-
-### Resolution 1x1 cell size --------------------------------------------
-
-#Charge the prediction obtained with Maxent
-pred <- rast("resultados/especialista.generalista_NODIST/generalista/1000/Virtual_Species_avg.asc")
-r_base.1000 <- rast(ncol=1000, nrow=1000, xmin=0, xmax=1000, ymin=0, ymax=1000, )
-pred@cpp[["extent"]] <- r_base.1000@cpp[["extent"]]
-
-data_oc <- read.csv("D:/OneDrive - Universidad de Castilla-La Mancha/DOCTORADO UCLM/ESTANCIAS/estancia UCLM/simulaciones/capas_generalista.especialista/generalista/sampling_units.csv")
-oc_sv <- vect(data_oc, geom=c("x", "y"))
-
-plot(pred)
-points(oc_sv, pch=16)
-
-preds <- extract(pred, oc_sv, method="simple")
-
-comp_data <- data.frame(cbind(data_oc, preds))
-
-names(comp_data) <- c("x", "y", "SampleID", "Abundance", "Occurrence",
-                      "ID",  "Suitability_predicted_by_Maxent")
-
-comp_data$Abundance <- comp_data$Abundance/max(comp_data$Abundance)
-
-library(ggplot2)
-ggplot(data = comp_data, 
-       aes(x = Suitability_predicted_by_Maxent, y = Abundance)) + 
-  geom_point() +
-  ggtitle("Abundance-Suitability relationship")
-
-tau <- c(0.1,0.2,0.3,0.4, 0.5, 0.6,0.7,0.8, 0.9, 0.99)
-
-ggplot(comp_data, aes(Suitability_predicted_by_Maxent,Abundance)) + 
-  geom_point() + 
-  geom_quantile(quantiles = tau) +
-  geom_smooth(method = 'glm', col="red", size = 2) +
-  ggtitle("Regresion cuantilica suitability_abundancia Simulacion 1000G")
-
-#Now we do a GLM to obtain the linear adjustment of the relationship.
-fit1000G <- glm(Abundance ~ Suitability_predicted_by_Maxent, data = comp_data, family = poisson())
-summary(fit1000G)
-
-#Obtain % explicated Devianze
-with(summary(fit1000G), 1 - deviance/null.deviance)*100
-
-#Now we do the Quantile regresion
-library(quantreg)
-tau <- c(0.1,0.2,0.3,0.4, 0.5, 0.6,0.7,0.8, 0.9, 0.99)
-fitQ1000G <- rq(Abundance ~ Suitability_predicted_by_Maxent, tau, data = comp_data) 
-plot(fitQ1000G)
+#Create the plot with the non-linear quantile regressions
+ggplot(sampled_data, aes(Pred_uni_3, Abund.unif01)) +
+  geom_point(alpha = 0.5) +
+  geom_line(data = predictions, aes(x = Pred.aggr, y = Prediction, group = Quantile, color = as.factor(Quantile)), size = 1) +
+  scale_color_viridis_d(name = "Quantile") +
+  ggtitle("Regresión cuantilica suitability_abundancia (no lineal)") +
+  theme_minimal()
 
 
 
